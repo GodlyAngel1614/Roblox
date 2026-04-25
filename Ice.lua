@@ -207,7 +207,7 @@ function Ice:Activate()
 		return
 	end
 
-	self:_playAnimation()
+	self:playAnimation()
 	local startCFrame = spawnPart.CFrame
 	local targetCFrame
 
@@ -227,7 +227,7 @@ function Ice:Activate()
 	tween.Completed:Wait()
 	conjureClone:Destroy()
 
-	local impactClone = self:_spawnVfx(self.impactVfxName, targetCFrame)
+	local impactClone = self:spawnVfx(self.impactVfxName, targetCFrame)
 	if impactClone then
 		soundControllerModule:Play(self.soundEffect, impactClone)
 		Debris:AddItem(impactClone, self.sustainTime)
@@ -237,8 +237,8 @@ function Ice:Activate()
 		local elapsed = 0
 		local step = 1
 		while elapsed < self.sustainTime do
-			self:_applyDamage()
-			self:_applySlow()
+			self:applyDamage()
+			self:applySlow()
 			task.wait(step)
 			elapsed += step
 		end
