@@ -51,7 +51,7 @@ function Ice.new(player, ability, target)
 	return self
 end
 
-function Ice:_checkPlayer()
+function Ice:checkPlayer()
 	if not self.player then
 		return false
 	end
@@ -63,7 +63,7 @@ end
 
 
 function Ice:checkMana()
-	if not self:_checkPlayer() then return false end
+	if not self:checkPlayer() then return false end
 
 	local ClassAttributes = self.player:WaitForChild("ClassStats")
 	if not ClassAttributes then return end
@@ -109,7 +109,7 @@ function Ice:spawnVfx(vfxName, cframe)
 
 	for _, attachment in clone:GetChildren()) do
 		if attachment:IsA("Attachment") then
-			for _, emitter in pairs(attachment:GetChildren()) do
+			for _, emitter in attachment:GetChildren() do
 				if emitter:IsA("ParticleEmitter") then
 					emitter:Emit(5)
 				end
@@ -179,7 +179,7 @@ function Ice:applySlow(target)
 end
 
 
-function Ice:applyDamage() -- Don't call this outside of this module that's what the _ is for.
+function Ice:applyDamage()
 	local enemiesFolder = workspace:FindFirstChild("Enemies")
 	if not enemiesFolder then return end
 
