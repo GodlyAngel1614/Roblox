@@ -53,18 +53,16 @@ end
 
 function Ice:_checkPlayer()
 	if not self.player then
-		warn("(Conjure) Player is nil!")
 		return false
 	end
 	if not self.player.Character then
-		warn("(Conjure) Player has no character!")
 		return false
 	end
 	return true
 end
 
 
-function Ice:_checkMana()
+function Ice:checkMana()
 	if not self:_checkPlayer() then return false end
 
 	local ClassAttributes = self.player:WaitForChild("ClassStats")
@@ -88,7 +86,7 @@ function Ice:_checkMana()
 	return true
 end
 
-function Ice:_playAnimation()
+function Ice:playAnimation()
 	if self.animation and self.character then
 		animationControllerModule:PlayCustom(self.character, self.animation)
 	else
@@ -96,10 +94,9 @@ function Ice:_playAnimation()
 	end
 end
 
-function Ice:_spawnVfx(vfxName, cframe)
+function Ice:spawnVfx(vfxName, cframe)
 	local vfxTemplate = Effects:FindFirstChild(vfxName)
 	if not vfxTemplate then
-		warn("Couldn't find VFX: " .. tostring(vfxName))
 		return nil
 	end
 
@@ -110,7 +107,7 @@ function Ice:_spawnVfx(vfxName, cframe)
 	clone.Transparency = 1
 	clone.Parent = workspace
 
-	for _, attachment in pairs(clone:GetChildren()) do
+	for _, attachment in clone:GetChildren()) do
 		if attachment:IsA("Attachment") then
 			for _, emitter in pairs(attachment:GetChildren()) do
 				if emitter:IsA("ParticleEmitter") then
@@ -123,11 +120,10 @@ function Ice:_spawnVfx(vfxName, cframe)
 	return clone
 end
 
-function Ice:_applySlow(target)
+function Ice:applySlow(target)
 	local enemiesFolder = workspace:FindFirstChild("Enemies")
 	if not enemiesFolder then return end
 	local roll = math.random(1, 100)
-
 
 	if self.target:IsA("Model") 
 		and self.target:FindFirstChildOfClass("Humanoid") 
@@ -145,10 +141,9 @@ function Ice:_applySlow(target)
 				local root = self.target:FindFirstChild("HumanoidRootPart")
 				if humanoid and root then
 					root.Anchored = true
-					print(self.target.Name .. " is frozen!")
 					for i, bp in (self.target:GetChildren()) do
 						if bp:IsA("MeshPart") or bp:IsA("BasePart") then
-							task.delay((i - 1) * 0.1, function() -- 0.1s stagger between each part
+							task.delay((i - 1) * 0.1, function()
 								local tween = TweenService:Create(
 									bp,
 									TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut),
@@ -184,7 +179,7 @@ function Ice:_applySlow(target)
 end
 
 
-function Ice:_applyDamage() -- Don't call this outside of this module that's what the _ is for.
+function Ice:applyDamage() -- Don't call this outside of this module that's what the _ is for.
 	local enemiesFolder = workspace:FindFirstChild("Enemies")
 	if not enemiesFolder then return end
 
@@ -209,7 +204,6 @@ function Ice:Activate()
 
 	local spawnPart = self.character:FindFirstChild(self.bodyPart)
 	if not spawnPart then
-		warn("Couldn't find spawn part: " .. self.bodyPart)
 		return
 	end
 
@@ -222,7 +216,6 @@ function Ice:Activate()
 		if not root then return end
 		targetCFrame = root.CFrame
 	else
-		warn("Invalid target for Conjure")
 		return
 	end
 
@@ -253,7 +246,6 @@ function Ice:Activate()
 		Cooldown[self.player] = true
 		task.delay(self.cooldown, function()
 			Cooldown[self.player] = false
-			print("Cooldown over and the player is ready to try again.")
 		end)
 	end)
 end
