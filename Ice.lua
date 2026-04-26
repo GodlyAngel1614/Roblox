@@ -15,12 +15,10 @@ local soundControllerModule = require(ReplicatedStorage:WaitForChild("modules").
 local animationCache = require(ReplicatedStorage.modules.Server.animationCaller)
 local Calculate = require(ReplicatedStorage.modules.CalculationModule) -- The main calculations module.
 
--- dict to determine which player is on cooldown and for how long 
-
 local Cooldown = {}
 
 local Fire = {}
-Fire.__index = Fire -- set the metatable
+Fire.__index = Fire 
 
 function Fire.new(player, ability, target)
 	local self = setmetatable({}, Fire)  -- create new fire object
@@ -76,10 +74,10 @@ function Fire:checkMana()
 end
 
 function Fire:playAnimation()
-	if self.animation and self.character then -- check if the animation is not "" and if the character exists
-		animationCache:Get(self.player):PlayCustom(self.animation) -- pass in a animation id the cache holds the animation controller we set when the player joined
+	if self.animation and self.character then -- check if anim and char exist
+		animationCache:Get(self.player):PlayCustom(self.animation) -- pass in a anim to the cache if the cache found a instance for this player
 	else
-		print(self.ability.Name .. "' has no animation.") -- print that the ability has no animation if it's either "" or there's simply not an animation specified 
+		-- no anim 
 	end
 end
 
