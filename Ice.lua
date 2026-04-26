@@ -147,7 +147,7 @@ function Fire:Inner(position) -- Create a shockwave effect "After effects?" it's
 	ri.Parent = workspace
 
 	TweenService:Create(ri, TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-		Size = Vector3.new(0.2, self.range * 6, self.range * 6), -- Tween the shckwave to be as wise as the range * 6
+		Size = Vector3.new(0.2, self.range * 6, self.range * 6), -- Tween the shckwave to be as wide as the range * 6
 		Transparency = 1
 	}):Play()
 
@@ -187,7 +187,7 @@ function Fire:applyDamage(originCFrame) -- apply the damage to the targets
 					--Apply a knockback effect to the enemy's HumanoidRootPart.
 					local force = 60 -- horizontal knockback strength (200) 
 					local knockbackVelocity = direction * force + Vector3.new(0, 50, 0) -- direction + upward lift
-					local attachment =hrp:FindFirstChild("KnockbackAttachment")
+					local attachment = hrp:FindFirstChild("KnockbackAttachment")
 
 					if not attachment then
 						attachment = Instance.new("Attachment") -- create a new attachment
