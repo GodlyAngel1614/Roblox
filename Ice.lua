@@ -218,22 +218,22 @@ function Fire:Activate()
 	end
 	if not self.character then return end
 
-	local spawnPart = self.character:FindFirstChild(self.bodyPart) -- the spawn part is the part of the player's character that the ability will originate from.
+	local spawnPart = self.character:FindFirstChild(self.bodyPart) -- spawn at that part in the character
 	if not spawnPart then 
 		warn("Couldn't find spawn part: " .. self.bodyPart)
 		return
 	end
 
-	self:playAnimation() --Call play animation
-	local startCFrame = spawnPart.CFrame -- start CFrame is where we originate
-	local targetCFrame -- targetCFrame is where the effect is traveling too.
+	self:playAnimation() -- play anim
+	local startCFrame = spawnPart.CFrame 
+	local targetCFrame
 
 	if typeof(self.target) == "Instance" and self.target:IsA("Model") then -- Check if it's a model or "instance" possibly another player
 		local root = self.target:FindFirstChild("HumanoidRootPart") -- Find the root part of the target model
 		if not root then return end -- If we can't find the root part then return
 		targetCFrame = root.CFrame 
 	elseif typeof(self.target) == "Vector3" then -- if we have a Vector3 then that means the player has pointed towards the ground
-		targetCFrame = CFrame.new(self.target) -- we don't have to search for the root since a vector already is a position we make the Vector a CFrame 
+		targetCFrame = CFrame.new(self.target) 
 	else
 		warn("Invalid target for Conjure") -- If we have an invalid target then return
 		return
@@ -261,16 +261,16 @@ function Fire:Activate()
 	abilityEffects:FireClient(self.player, "ExplosionHit") -- Fire the client event the client will run the camera function for the given param this case being "ExplosionHit"
 
 	task.spawn(function() -- this function runs completely indepent of the rest of the code so it doesn't halt progress with the whole loop.
-		local t = 0 -- default time is set to 9 
+		local t = 0 
 		local step = 0.5 -- step is the time between each step and how long it takes for elapsed to equal sustain time (How long the ability will last on impact)
 		while t < self.sustainTime do -- while elapsed is less than the sustain time then
 			self:applyDamage(targetCFrame) -- apply the damage to the targets
-			task.wait(step) -- wait step amount
-			t += step -- add step to elapsed
+			task.wait(step) -- wait t amount
+			t += step -- add step to t
 		end
 
-		Cooldown[self.player] = true -- We put the player on cooldown since they have activated the ability
-		task.delay(self.cooldown, function() -- we have an inbuilt delay which will wait the cooldown time
+		Cooldown[self.player] = true -- put player on cooldown
+		task.delay(self.cooldown, function()
 			Cooldown[self.player] = false -- finally the player is off cooldown and can use the ability again!
 		end)
 	end)
