@@ -87,10 +87,10 @@ function Fire:spawnVfx(vfxName, cframe) -- spawn the vfx and return the clone
 		return nil 
 	end
 
-	local clone = vfxTemplate:Clone() -- clone the vfx template if found
+	local clone = vfxTemplate:Clone() 
 	clone.Anchored = true
 	clone.CanCollide = false
-	clone.CFrame = cframe -- The CFrame we passed into the function is the target position and that's where it'll originally start.
+	clone.CFrame = cframe -- where it should spawn
 	clone.Transparency = 1 -- the transparency of the part should be 1 to not break immersion by seeing a part floating randomly in the world
 	clone.Parent = workspace 
 
@@ -183,12 +183,12 @@ function Fire:applyDamage(originCFrame) -- apply the damage to the targets
 					end
 					
 					--Apply a knockback effect to the enemy's HumanoidRootPart.
-					local force = 60 -- horizontal knockback strength (200) 
-					local knockbackVelocity = direction * force + Vector3.new(0, 50, 0) -- direction + upward lift
+					local force = 60 
+					local knockbackVelocity = direction * force + Vector3.new(0, 50, 0)
 					local attachment = hrp:FindFirstChild("KnockbackAttachment")
 
 					if not attachment then
-						attachment = Instance.new("Attachment") -- create a new attachment
+						attachment = Instance.new("Attachment") -- create a new attachment if attachment not already found
 						attachment.Name = "KnockbackAttachment" 
 						attachment.Parent = model.HumanoidRootPart
 					end
