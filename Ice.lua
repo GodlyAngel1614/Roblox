@@ -244,6 +244,15 @@ function Fire:startCooldown()
 	end)
 end
 
+-- This function is the main execution pipeline and runs in this order:
+-- Check if player is on cooldown, if they have enough mana, and if their's a valid character
+-- Resolve the target passed in the constructor to a CFrame
+-- Spawn and animate the VFX from the casters body part
+-- On impact create impact effects (VFX, SFX, Animation, Visual rings)
+-- Start a sustained damage loop on those in the hit chars table
+-- Apply cooldown to prevent spam
+
+-- This function yields during projectile travel meaning targets aren't "locked" until impact
 function Fire:activate()
 	if cooldownByPlayer[self.player] then return end
 	if not self:hasMana() then return end
