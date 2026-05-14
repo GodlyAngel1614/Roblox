@@ -1,8 +1,8 @@
 --[[
-    Fire ability module  is responsible for handling a projectile based AOE attack 
+    Fire ability module: A projectile AOE attack
 
-    This module manages casting validation, mana consumption, projectile travel,
-    impact VFX, and sustained damage to targets within a radius.
+    This module manages casting validation, mana consumption projectile travel
+    impact VFX and sustained damage to targets within a radius
 ]]
 
 local Debris = game:GetService("Debris")
@@ -66,6 +66,7 @@ function Fire.new(player: Player, ability, target): ClassType
 	return self
 end
 
+-- Chec
 function Fire:isValidCharacter()
 	return self.player ~= nil and self.player.Character ~= nil
 end
