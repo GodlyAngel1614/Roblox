@@ -1,3 +1,10 @@
+--[[
+    Fire ability module  is responsible for handling a projectile based AOE attack 
+
+    This module manages casting validation, mana consumption, projectile travel,
+    impact VFX, and sustained damage to targets within a radius.
+]]
+
 local Debris = game:GetService("Debris")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
@@ -63,6 +70,7 @@ function Fire:isValidCharacter()
 	return self.player ~= nil and self.player.Character ~= nil
 end
 
+-- Check if the player has enough mana to cast the ability.
 function Fire:hasMana()
 	if not self:isValidCharacter() then
 		return false
@@ -124,7 +132,7 @@ function Fire:spawnVfx(name, cframe)
 	return clone
 end
 
--- Outer impact ring 
+-- Creates a big ring to show impact and scale it 
 function Fire:impactRing(position)
 	local ring = Instance.new("Part")
 	ring.Shape = Enum.PartType.Cylinder
@@ -145,7 +153,7 @@ function Fire:impactRing(position)
 	Debris:AddItem(ring, 0.4)
 end
 
--- Inner impact ring 
+-- A ring on the inside to show a more compact hit area
 function Fire:snapRing(position)
 	local ring = Instance.new("Part")
 	ring.Shape = Enum.PartType.Cylinder
@@ -169,6 +177,7 @@ function Fire:snapRing(position)
 	Debris:AddItem(ring, 0.5)
 end
 
+-- Damage applicatio and hit validation 
 function Fire:applyDamage(origin)
 	local enemies = workspace:FindFirstChild("Enemies")
 	if not enemies then return end
@@ -181,15 +190,15 @@ function Fire:applyDamage(origin)
 
 			local dist = (hrp.Position - origin.Position).Magnitude
 
-			if dist <= self.range and not self._hitChars[model] then
+			if dist <= self.range and not self._hitChars[model] then -- Ensures targets are only affected once per cast to prevent multi-hit stacking
 				self._hitChars[model] = true
 
 				local calc = Calculate.new(self.player, model)
 				local crit = calc:ApplyCritChance()
 
-				local finalDamage = calc:ApplyDamage(self.damage, "Fire", crit, false)
+				local finalDamage = calc:ApplyDamage(self.damage, "Fire", crit, false) -- Applies final damage after scaling from stat modifiers and crit chances
 
-				-- Knockback away from the hit spot 
+				-- Knockback away from the hit spot so that players don't all go in the same direction
 				local dir = (hrp.Position - origin.Position)
 				if dir.Magnitude == 0 then
 					dir = Vector3.new(0, 0, 1)
@@ -215,6 +224,7 @@ function Fire:applyDamage(origin)
 	end
 end
 
+-- Handles target resolution from either NPC models or world position input
 function Fire:getTargetCFrame()
 	if typeof(self.target) == "Instance" and self.target:IsA("Model") then
 		local root = self.target:FindFirstChild("HumanoidRootPart")
@@ -271,7 +281,7 @@ function Fire:activate()
 
 	abilityEffects:FireClient(self.player, "ExplosionHit")
 
-	-- Sustained damage window players take damage for as long as the current t is less than sustainTime
+	-- Target the area and then apply sustained damage to the hit targets while t is less than the sustain time
 	task.spawn(function()
 		local t = 0
 		while t < self.sustainTime do
@@ -281,7 +291,7 @@ function Fire:activate()
 		end
 	end)
 
-	self:startCooldown()
+	self:startCooldown() -- After ability is cast start the cooldown to prevent players from spamming a high damage AOE attack
 end
 
 return Fire
